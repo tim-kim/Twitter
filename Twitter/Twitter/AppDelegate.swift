@@ -43,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        print(url.description)
+        //print(url.description)
         
         let requestToken = BDBOAuth1Credential(queryString: url.query)
         let twitterClient = BDBOAuth1SessionManager(baseURL: URL(string: "https://api.twitter.com")!, consumerKey: "GlAZ62XdikrWIsdT25bYfKjuH", consumerSecret: "JAhMmEJ4A4nQF9XXsRcrS34OmRCM3IP4BQb5J7SpwykvnCHT2P")
@@ -52,7 +52,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("I got the access token!")
             
             twitterClient?.get("1.1/account/verify_credentials.json", parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response: Any?) -> Void in
-                print("account: \(response)")
+                
+                let userDictionary = response as! NSDictionary
+                let user = User(dictionary: userDictionary)
+                
+                //print("account: \(response)")
+                print("name: \(user.name)")
                 }, failure: { (task: URLSessionDataTask?, error: Error) -> Void in
                     //code
             })

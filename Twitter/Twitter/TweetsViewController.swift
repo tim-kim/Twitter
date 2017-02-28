@@ -14,6 +14,7 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     @IBOutlet weak var tableView: UITableView!
     var tweets: [Tweet]!
     
+    let refreshControl = UIRefreshControl()
     var isMoreDataLoading = false
     var loadingMoreView:InfiniteScrollActivityView?
     
@@ -37,6 +38,9 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         tableView.contentInset = insets
 
         refreshTable()
+        
+        refreshControl.addTarget(self, action: #selector(refreshTable), for: .valueChanged)
+        tableView.insertSubview(refreshControl, at: 0)
         
     }
     

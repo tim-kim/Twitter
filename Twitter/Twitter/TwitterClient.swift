@@ -13,18 +13,14 @@ import BDBOAuth1Manager
 class TwitterClient: BDBOAuth1SessionManager {
     
     static let sharedInstance = TwitterClient(baseURL: NSURL(string: "https://api.twitter.com")! as URL!, consumerKey: "1gRRuJzINoOIYPdiFYbcnjm2D", consumerSecret: "mrZ5eT1UhwkgJc9Mp4rHiQfLbW79yld7k217CNZP2QM0tQrBoU")
-    //static is the same as class, but you can't create a class stored property yet
-    //static just means it can't be overriden (difference with class)
     
     var loginSuccess: (() -> ())?
     var loginFailure: ((Error) -> ())?
     
-    //asynchronous. Success: I will get an array of Tweets and then do nothing. () = nothing.
     func homeTimeline(success: @escaping ([Tweet]) -> (), failure: @escaping (Error) -> ()) {
         get("1.1/statuses/home_timeline.json", parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response: Any?) -> Void in
             let dictionaries = response as! [NSDictionary]
             let tweets = Tweet.tweetsWithArray(dictionaries: dictionaries) //class function
-            //print(tweets)
             
             success(tweets)
             
@@ -45,18 +41,15 @@ class TwitterClient: BDBOAuth1SessionManager {
         })
     }
     
-    //declaring closure error
     func login(success: @escaping () -> (), failure: @escaping (Error) -> ()) {
         loginSuccess = success
         loginFailure = failure
         
-        //logout and clear stuff
         TwitterClient.sharedInstance?.deauthorize()
         TwitterClient.sharedInstance?.fetchRequestToken(withPath: "oauth/request_token", method: "GET",
                                                         callbackURL: URL(string: "mytwitterdemo://oauth"), scope: nil, success: { (requestToken: BDBOAuth1Credential?) -> Void in
-                                                            let url = URL(string: "https://api.twitter.com/oauth/authorize?=oauth_token=\((requestToken?.token)!)")!//? is a query parameter
+                                                            let url = URL(string: "https://api.twitter.com/oauth/authorize?=oauth_token=\((requestToken?.token)!)")!
                                                             print("request: \((requestToken?.token)!)")
-                                                            //UIApplication.shared.open(url, options: [:], completionHandler: nil) // <- learn how to deal with completion handler
                                                             UIApplication.shared.open(url)
             }, failure: { (error: Error?) in
                 print("error: \(error?.localizedDescription)")
@@ -76,7 +69,7 @@ class TwitterClient: BDBOAuth1SessionManager {
         fetchAccessToken(withPath: "oauth/access_token", method: "POST", requestToken: requestToken, success: { (accessTOken: BDBOAuth1Credential?) -> Void in
             
             self.currentAccount(success: { (user) in
-                User.currentUser = user //trigger a cal to setter and then save it
+                User.currentUser = user
                 self.loginSuccess?()
                 }, failure: { (error) in
                     print("error: \(error.localizedDescription)")
@@ -90,7 +83,6 @@ class TwitterClient: BDBOAuth1SessionManager {
     
     func retweet(success: @escaping (Tweet) -> (), failure: @escaping (Error) -> (), tweetID: Int) {
         post("1.1/statuses/retweet/\(tweetID).json", parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response: Any?) in
-            print("retweet")
             
             let dictionary = response as! NSDictionary
             let tweet = Tweet(dictionary: dictionary)
@@ -102,7 +94,6 @@ class TwitterClient: BDBOAuth1SessionManager {
     
     func favorite(success: @escaping (Tweet) -> (), failure: @escaping (Error) -> (), tweetID: Int) {
         post("1.1/favorites/create.json", parameters: ["id": tweetID], progress: nil, success: { (task: URLSessionDataTask, response: Any?) in
-            print("favorite")
             
             let dictionary = response as! NSDictionary
             let tweet = Tweet(dictionary: dictionary)

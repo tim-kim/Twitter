@@ -16,7 +16,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        if User.currentUser != nil {
+            print("there is a current user")
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let vc = storyboard.instantiateViewController(withIdentifier: "TweetsNavigationController")
+            window?.rootViewController = vc
+        }
+        
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: User.userDidLogoutNotification), object: nil, queue: OperationQueue.main) { (Notification) in
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let vc = storyboard.instantiateInitialViewController()
+            self.window?.rootViewController = vc
+        }
         return true
     }
     
@@ -43,29 +55,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        //print(url.description)
+        TwitterClient.sharedInstance?.handleOpenUrl(url: url)
         
-        let requestToken = BDBOAuth1Credential(queryString: url.query)
-        let twitterClient = BDBOAuth1SessionManager(baseURL: URL(string: "https://api.twitter.com")!, consumerKey: "GlAZ62XdikrWIsdT25bYfKjuH", consumerSecret: "JAhMmEJ4A4nQF9XXsRcrS34OmRCM3IP4BQb5J7SpwykvnCHT2P")
-        
-        twitterClient?.fetchAccessToken(withPath: "oauth/access_token", method: "POST", requestToken: requestToken, success: { (accessToken: BDBOAuth1Credential?) -> Void in
-            print("I got the access token!")
-            
-            twitterClient?.get("1.1/account/verify_credentials.json", parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response: Any?) -> Void in
-                
-                let userDictionary = response as! NSDictionary
-                let user = User(dictionary: userDictionary)
-                
-                //print("account: \(response)")
-                print("name: \(user.name)")
-                }, failure: { (task: URLSessionDataTask?, error: Error) -> Void in
-                    //code
-            })
-            
-            }, failure: { (error: Error?) in
-                print("error: \(error?.localizedDescription)")
-        })
         return true
     }
-    
 }
+

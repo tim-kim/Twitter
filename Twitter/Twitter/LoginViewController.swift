@@ -7,32 +7,33 @@
 //
 
 import UIKit
+import AFNetworking
 import BDBOAuth1Manager
 
 class LoginViewController: UIViewController {
     
+    @IBOutlet weak var logoView: UIImageView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        logoView.image = #imageLiteral(resourceName: "TwitterLogo")
+        
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
-    @IBAction func onLogin(_ sender: AnyObject) {
-        let twitterClient = BDBOAuth1SessionManager(baseURL: URL(string: "https://api.twitter.com")!, consumerKey: "GlAZ62XdikrWIsdT25bYfKjuH", consumerSecret: "JAhMmEJ4A4nQF9XXsRcrS34OmRCM3IP4BQb5J7SpwykvnCHT2P")
+    @IBAction func onLoginButton(_ sender: AnyObject) {
+        let client = TwitterClient.sharedInstance
         
-        twitterClient?.deauthorize()
-        twitterClient?.fetchRequestToken(withPath: "oauth/request_token", method: "GET", callbackURL: URL(string: "twitterclone://oauth"), scope: nil, success: { (requestToken: BDBOAuth1Credential?) -> Void in
-            print("request: \((requestToken?.token)!)")
-            
-            let url = URL(string: "https://api.twitter.com/oauth/authorize?=oauth_token=\((requestToken?.token)!)")!
-            UIApplication.shared.open(url)
-            
-            }, failure: { (error: Error?) in
-                print("error: \(error?.localizedDescription)")
+        client?.login(success: {
+            self.performSegue(withIdentifier: "loginSegue", sender: nil)
+            }, failure: { (error) in
+                print("error: error.localizedDescription")
         })
     }
+    
     
     
     

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22B325411E6E100E003C743B /* TweetDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B325401E6E100E003C743B /* TweetDetailViewController.swift */; };
 		22C1679D1E652B7E00CCB465 /* InfiniteScrollActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C1679C1E652B7E00CCB465 /* InfiniteScrollActivityView.swift */; };
 		22D2B61F1E647CFD0060678A /* TwitterClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D2B61E1E647CFD0060678A /* TwitterClient.swift */; };
 		22D2B6211E6484810060678A /* TweetsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D2B6201E6484810060678A /* TweetsViewController.swift */; };
@@ -23,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		193AEB83995D9FBA409027FC /* Pods-Twitter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Twitter.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Twitter/Pods-Twitter.debug.xcconfig"; sourceTree = "<group>"; };
+		22B325401E6E100E003C743B /* TweetDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetDetailViewController.swift; sourceTree = "<group>"; };
 		22C1679C1E652B7E00CCB465 /* InfiniteScrollActivityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfiniteScrollActivityView.swift; sourceTree = "<group>"; };
 		22D2B61E1E647CFD0060678A /* TwitterClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwitterClient.swift; sourceTree = "<group>"; };
 		22D2B6201E6484810060678A /* TweetsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetsViewController.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 			children = (
 				22ED0C8A1E63E7BC00FD451E /* LoginViewController.swift */,
 				22D2B6201E6484810060678A /* TweetsViewController.swift */,
+				22B325401E6E100E003C743B /* TweetDetailViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -256,6 +259,7 @@
 			files = (
 				22C1679D1E652B7E00CCB465 /* InfiniteScrollActivityView.swift in Sources */,
 				22D2B61F1E647CFD0060678A /* TwitterClient.swift in Sources */,
+				22B325411E6E100E003C743B /* TweetDetailViewController.swift in Sources */,
 				22ED0C8B1E63E7BC00FD451E /* LoginViewController.swift in Sources */,
 				22D2B6211E6484810060678A /* TweetsViewController.swift in Sources */,
 				22ED0C891E63E7BC00FD451E /* AppDelegate.swift in Sources */,

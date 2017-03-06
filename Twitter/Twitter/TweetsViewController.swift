@@ -52,7 +52,8 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
             }, failure: { (error) in
                 print("error: \(error.localizedDescription)")
         })
-        self.isMoreDataLoading = false;
+        refreshControl.endRefreshing()
+        self.isMoreDataLoading = false
         self.loadingMoreView!.stopAnimating()
     }
     
@@ -108,6 +109,15 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
                 refreshTable()
             }
         }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let cell = sender as! UITableViewCell
+        let indexPath = tableView.indexPath(for: cell)
+        let tweet = tweets![indexPath!.row]
+        
+        let vc = segue.destination as! TweetDetailViewController
+        vc.tweet = tweet
     }
 
 }

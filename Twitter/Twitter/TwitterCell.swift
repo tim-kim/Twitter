@@ -8,79 +8,72 @@
 
 import UIKit
 
+protocol TweetCellDelegate: class {
+    func profileImageTapped(cell: TwitterCell, user: NSDictionary)
+}
+
 class TwitterCell: UITableViewCell {
     
-    var user: User!
-    var tweet: Tweet!
-    var tweetID: Int = 0
-    
-    @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var handleLabel: UILabel!
+    weak var profiledelegate: TweetCellDelegate?
+
     @IBOutlet weak var profileImageView: UIImageView!
-    @IBOutlet weak var descriptionLabel: UILabel!
+    @IBOutlet weak var userNameLabel: UILabel!
+    @IBOutlet weak var userIDLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var favoriteCountLabel: UILabel!
-    
-    @IBOutlet weak var retweetCountLabel: UILabel!
-    @IBOutlet weak var retweetButton: UIButton!
+    @IBOutlet weak var textInfoLabel: UILabel!
     @IBOutlet weak var favoriteButton: UIButton!
-    
+    @IBOutlet weak var retreatButton: UIButton!
+    @IBOutlet weak var favoriteNum: UILabel!
+    @IBOutlet weak var retweetNum: UILabel!
+    var user: User!
+    var tweetID:NSString?
+    var tweet: Tweet!
+    weak var delegate: refreshDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        profileImageView.layer.cornerRadius = 3
-        profileImageView.clipsToBounds = true
-        profileImageView.layer.cornerRadius = 3
-        profileImageView.clipsToBounds = true
+        let tapGesture = UITapGestureRecognizer()
+        tapGesture.delegate = self
+        profileImageView.isUserInteractionEnabled = true
+        let userProfileTap = UITapGestureRecognizer(target: self, action: #selector(userProfileTapped(_:)))
+        profileImageView.addGestureRecognizer(userProfileTap)
     }
-
+    
+    func userProfileTapped(_ gesture: UITapGestureRecognizer){
+        if let profiledelegate = profiledelegate{
+            profiledelegate.profileImageTapped(cell: self, user: (self.tweet?.user)!)
+        }
+    }
+    
+    @IBAction func onRetweet(_ sender: Any) {
+        self.retreatButton.setImage(UIImage(named: "retweet-icon-green"), for: UIControlState.normal)
+        self.retweetNum.textColor = UIColor.green
+        
+        TwitterClient.sharedInstance?.retweet(success: { (tweet: Tweet) in
+            print(tweet.retweetCount)
+            self.retweetNum.text = "\(tweet.retweetCount)"
+            self.tweet = tweet
+        }, failure: { (error: Error) in
+            print(error.localizedDescription)
+        }, tweetID: tweetID as! String)
+    }
+    
+    
+    @IBAction func onFavorite(_ sender: Any) {
+        self.favoriteButton.setImage(UIImage(named: "favor-icon-red"), for: UIControlState.normal)
+        self.favoriteNum.textColor = UIColor.red
+        
+        TwitterClient.sharedInstance?.favorite(success: { (tweet: Tweet) in
+            print(tweet.favoritesCount)
+            self.favoriteNum.text = "\(tweet.favoritesCount)"
+            self.tweet = tweet
+        }, failure: { (error: Error) in
+            print(error.localizedDescription)
+        }, tweetID: tweetID as! String)
+    }
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-
-    @IBAction func onRetweet(_ sender: AnyObject) {
-        TwitterClient.sharedInstance?.retweet(success: { (tweet: Tweet) in
-            print(tweet.retweetCount)
-            self.retweetCountLabel.text = "\(tweet.retweetCount)"
-            self.retweetButton.setImage(UIImage(named: "retweet-icon-green"), for: UIControlState.normal)
-            self.retweetCountLabel.textColor = UIColor.green
-        }, failure: { (error: Error) in
-            self.onUnretweet()
-        }, tweetID: tweetID)
-    }
-    
-    func onUnretweet() {
-        TwitterClient.sharedInstance?.unretweet(success: { (tweet: Tweet) in
-            print("unretweet")
-            self.retweetCountLabel.text = "\(tweet.retweetCount)"
-            self.retweetCountLabel.textColor = UIColor.black
-            self.retweetButton.setImage(UIImage(named: "retweet-icon"), for: UIControlState.normal)
-        }, failure: { (error: Error) in
-            print("unretweet failed. Error code: \(error.localizedDescription)")
-        }, tweetID: tweetID)
-    }
-
-    @IBAction func onFavorite(_ sender: AnyObject) {
-        TwitterClient.sharedInstance?.favorite(success: { (tweet: Tweet) in
-            print(tweet.favoritesCount)
-            self.favoriteCountLabel.text = "\(tweet.favoritesCount)"
-            self.favoriteButton.setImage(UIImage(named: "favor-icon-red"), for: UIControlState.normal)
-            self.favoriteCountLabel.textColor = UIColor.red
-            
-        }, failure: { (error: Error) in
-            self.onUnfavorite()
-        }, tweetID: tweetID)
-    }
-    
-    func onUnfavorite() {
-        TwitterClient.sharedInstance?.unfavorite(success: { (tweet: Tweet) in
-            self.favoriteCountLabel.text = "\(tweet.favoritesCount)"
-            self.favoriteCountLabel.textColor = UIColor.black
-            self.favoriteButton.setImage(UIImage(named: "favor-icon"), for: UIControlState.normal)
-        }, failure: { (error: Error) in
-            print("unfavorite failed. Error code: \(error.localizedDescription)")
-        }, tweetID: tweetID)
-    }
-    
     
 }

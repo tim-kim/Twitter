@@ -12,12 +12,10 @@ import BDBOAuth1Manager
 
 class LoginViewController: UIViewController {
     
-    @IBOutlet weak var logoView: UIImageView!
+    @IBOutlet weak var loginButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        logoView.image = #imageLiteral(resourceName: "TwitterLogo")
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -33,16 +31,5 @@ class LoginViewController: UIViewController {
                 print("error: error.localizedDescription")
         })
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
 }
 
